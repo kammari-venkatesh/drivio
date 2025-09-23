@@ -1,0 +1,258 @@
+/* Basic Reset & Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #F5F7FA;
+  color: #1a202c;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.Logo{
+  width: 150px;
+  height: 150px;
+}
+/* Main Container */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  padding: 20px;
+
+}
+input{
+  color: black;
+}
+
+/* Role Selector (Top Pill) */
+.role-selector {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 36px;
+  padding: 8px;
+  box-shadow: 0 8px 20px rgba(15, 22, 26, 0.06);
+  margin-bottom: 32px;
+}
+
+.role-tab {
+  border: none;
+  background-color: transparent;
+  padding: 10px 24px;
+  border-radius: 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap;
+}
+
+.role-tab.active {
+  background-color: #0A84FF;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.25);
+}
+
+/* Auth Card */
+.auth-card {
+  width: 420px;
+  max-width: 100%; /* Changed from 92vw for better handling on small screens */
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 36px 28px 32px;
+  box-shadow: 0 12px 30px rgba(16, 24, 40, 0.08);
+  text-align: center;
+}
+
+/* Card Header */
+.auth-icon {
+  margin: 0 auto 16px;
+}
+
+.auth-heading {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1D2939;
+  margin-bottom: 8px;
+}
+
+.auth-subheading {
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 28px;
+}
+
+/* Internal Panel Tabs (Login/Signup) */
+.panel-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.panel-tab {
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6B7280;
+  padding-bottom: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.panel-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #0A84FF;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.panel-tab.active {
+  color: #0A84FF;
+}
+
+.panel-tab.active::after {
+  transform: scaleX(1);
+}
+
+/* Form Styles */
+form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E6E9EC;
+  background-color: #F3F4F6;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #0A84FF;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-divider {
+    border: none;
+    border-top: 1px solid #E6E9EC;
+    margin: 20px 0;
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  color: #0A84FF;
+  text-decoration: none;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  height: 44px;
+  background-color: #0A84FF;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+.submit-btn:hover {
+  background-color: #0073e6;
+}
+
+.submit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
+}
+
+.submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* Validation & Success Messages */
+.error-message {
+    color: #e53e3e;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.success-message {
+    color: #38a169;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .auth-card {
+    width: 92vw;
+    padding: 28px 20px 24px;
+  }
+
+  .role-selector {
+    padding: 6px;
+    margin-bottom: 24px;
+  }
+
+  .role-tab {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .auth-heading {
+    font-size: 22px;
+  }
+}

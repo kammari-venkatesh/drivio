@@ -1,0 +1,304 @@
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f7f8fc;
+    color: #333;
+}
+
+/* Main Dashboard Container */
+.driver-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    border-right: 1px solid #eef0f4;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    box-sizing: border-box;
+    justify-content: space-between;
+}
+
+.sidebar-inner-container {
+    width: 100%;
+}
+
+.sidebar-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-bottom: 12px;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.profile-role {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin: 4px 0 0;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #495057;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-item:hover {
+    background-color: #f1f3f5;
+}
+
+.nav-item.active {
+    background-color: #e7f5ff;
+    color: #1c7ed6;
+    font-weight: 600;
+}
+
+.nav-item .icon {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-footer {
+    padding-top: 16px;
+    border-top: 1px solid #eef0f4;
+}
+
+/* --- Main Content --- */
+.main-content {
+    flex-grow: 1;
+    padding: 32px 48px;
+    background-color: #f7f8fc;
+}
+
+.main-header {
+    margin-bottom: 32px;
+}
+
+.main-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+}
+.main-header p {
+    font-size: 1rem;
+    color: #6c757d;
+    margin: 4px 0 0;
+}
+
+/* --- Dashboard Grid --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    gap: 32px;
+    align-items: start;
+    grid-template-areas:
+        "delivery map"
+        "status map";
+}
+
+/* --- Card Styles --- */
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid #eef0f4;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 24px 0;
+    color: #343a40;
+}
+
+/* --- Upcoming Delivery Card --- */
+.upcoming-delivery-card {
+    grid-area: delivery;
+}
+
+.delivery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.delivery-header .card-title {
+    margin: 0;
+}
+
+.delivery-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delivery-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 0.95rem;
+}
+
+.detail-item strong {
+    color: #495057;
+    font-weight: 500;
+    min-width: 80px;
+    display: inline-block;
+}
+
+.detail-item span {
+    color: #6c757d;
+}
+
+.status-pill {
+    background-color: #fffbe6;
+    color: #f59f00;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.delivery-image {
+    width: 150px;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* --- Delivery Status Control Card --- */
+.delivery-status-card {
+    grid-area: status;
+}
+
+.status-description {
+    color: #6c757d;
+    margin-bottom: 24px;
+}
+
+.status-buttons {
+    display: flex;
+    gap: 16px;
+}
+
+.status-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-pending { background-color: #ffd66b; color: #866100; }
+.btn-pending:hover { background-color: #ffca42; }
+
+.btn-on-route { background-color: #4dabf7; color: white; }
+.btn-on-route:hover { background-color: #339af0; }
+
+.btn-delivered { background-color: #69db7c; color: white; }
+.btn-delivered:hover { background-color: #51cf66; }
+
+
+/* --- Map View Card --- */
+.map-view-card {
+    grid-area: map;
+    padding: 12px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.map-image {
+    width: 100%;
+    flex-grow: 1;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.map-info {
+    padding: 12px 0 0;
+}
+.map-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #495057;
+}
+.map-info p strong {
+    color: #1c7ed6;
+}
+.map-info .last-updated {
+    font-size: 0.8rem;
+    color: #868e96;
+    margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "delivery"
+            "status"
+            "map";
+    }
+}
+
+@media (max-width: 768px) {
+    .driver-dashboard-container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 24px;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #eef0f4;
+    }
+    .sidebar-profile { display: none; }
+    .sidebar-nav { flex-direction: row; flex-grow: 0;}
+    .sidebar-footer { border: none; }
+    .main-content { padding: 24px; }
+}
