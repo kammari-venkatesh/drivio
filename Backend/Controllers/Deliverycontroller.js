@@ -321,6 +321,54 @@ export const deleteDeliverybyid = async (req, res) => {
 
 // In DeliveriesController.js
 
+// export const cancelDeliveryById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const delivery = await Delivery.findByIdAndUpdate(
+//       id,
+//       { status: "canceled" },
+//       { new: true }
+//     ).populate("driver_id").populate("customer_id");
+
+//     if (!delivery) {
+//       return res.status(404).json({
+//         message: "Delivery not found",
+//         status: "failed"
+//       });
+//     }
+
+//     // Emit to all relevant clients
+//     if (req.io) {
+//       // 1. Notify drivers (they're listening for "deliveryUpdated")
+//       req.io.emit("deliveryUpdated", delivery);
+
+//       // 2. Optionally notify customer
+//       const customerId = delivery.customer_id?._id?.toString();
+//       if (customerId && userSockets.has(customerId)) {
+//         const socketId = userSockets.get(customerId);
+//         req.io.to(socketId).emit("delivery_deleted", {
+//           message: "Delivery was canceled",
+//           deliveryId: id
+//         });
+//       }
+//     }
+
+//     return res.status(200).json({
+//       message: "Delivery canceled successfully",
+//       status: "success",
+//       data: delivery
+//     });
+
+//   } catch (err) {
+//     console.error("❌ Error canceling delivery:", err);
+//     return res.status(500).json({
+//       message: "Server error canceling delivery",
+//       status: "failed",
+//       error: err.message
+//     });
+//   }
+// };
 export const cancelDeliveryById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -340,10 +388,20 @@ export const cancelDeliveryById = async (req, res) => {
 
     // Emit to all relevant clients
     if (req.io) {
-      // 1. Notify drivers (they're listening for "deliveryUpdated")
+      // Notify **all drivers** listening for updates
       req.io.emit("deliveryUpdated", delivery);
 
-      // 2. Optionally notify customer
+      // Notify **specific driver**
+      const driverId = delivery.driver_id?._id?.toString();
+      if (driverId && userSockets.has(driverId)) {
+        const socketId = userSockets.get(driverId);
+        req.io.to(socketId).emit("delivery_deleted", {
+          message: "Delivery was canceled",
+          deliveryId: id
+        });
+      }
+
+      // Notify **specific customer**
       const customerId = delivery.customer_id?._id?.toString();
       if (customerId && userSockets.has(customerId)) {
         const socketId = userSockets.get(customerId);
@@ -369,6 +427,7 @@ export const cancelDeliveryById = async (req, res) => {
     });
   }
 };
+
 
 
 
