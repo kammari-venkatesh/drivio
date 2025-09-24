@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
 import Cookies from "js-cookie";
-
+import { useNavigate } from "react-router";
 // --- SVG Icons ---
 const DeliveriesIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -18,32 +18,24 @@ const DeliveriesIcon = () => (
   </svg>
 );
 
-const ReportsIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-    className="icon">
-    <path d="M8 6h13" />
-    <path d="M8 12h13" />
-    <path d="M8 18h13" />
-    <path d="M3 6h.01" />
-    <path d="M3 12h.01" />
-    <path d="M3 18h.01" />
-  </svg>
-);
+
 
 // --- Components ---
-const Sidebar = () => (
-  <aside className="sidebar">
-    <div className="sidebar-header profile-box">
-      <img
-        src="https://via.placeholder.com/48"
-        alt="Profile"
+const Sidebar = () => {
+  const navigate = useNavigate();
+
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-header profile-box">
+        <img
+          src="https://image.freepik.com/free-vector/man-profile-cartoon_18591-58482.jpg"
+          alt="Profile"
         className="profile-img"
       />
       <div>
-        <h2 className="sidebar-title">John Doe</h2>
-        <p className="sidebar-subtitle">Fleet Manager</p>
+        <h2 className="sidebar-title">{Cookies.get('username')}</h2>
+        <p className="sidebar-subtitle">DRIVIO</p>
+
       </div>
     </div>
     <nav className="sidebar-nav">
@@ -51,13 +43,26 @@ const Sidebar = () => (
         <DeliveriesIcon />
         <span>Deliveries</span>
       </a>
-      <a href="#" className="nav-item">
-        <ReportsIcon />
-        <span>Reports</span>
-      </a>
+    
+      <button className="nav-item logout-button" onClick={() => {
+        Cookies.remove('token');
+        Cookies.remove('userid');
+        Cookies.remove('username');
+        navigate('/');
+      }}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          className="icon">
+          <path d="M16 12H4" />
+          <path d="M12 16l4-4-4-4" />
+        </svg>
+        <span>Logout</span>
+      </button>
     </nav>
   </aside>
 );
+}
 
 const DeliveryLoader = ({ onBack }) => (
   <div className="card delivery-planner">
@@ -113,6 +118,7 @@ const DeliveryLoader = ({ onBack }) => (
 );
 
 const DeliveryPlanner = ({ pickup, setPickup, drop, setDrop, vehicle, setVehicle, onCreate, isLoading, onBack }) => {
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     if (pickup && drop && vehicle) {
@@ -124,9 +130,12 @@ const DeliveryPlanner = ({ pickup, setPickup, drop, setDrop, vehicle, setVehicle
         dropoff_location: drop,
         status: "pending",
       };
-      onCreate(newDelivery);
-    } else {
-      alert("Please fill all fields before creating a delivery.");
+      const result = onCreate(newDelivery);
+      if (result) {
+        navigate("/customerdelivery", { state: { deliveryCreated: true } });
+      } else {
+        alert("Please fill all fields before creating a delivery.");
+      }
     }
   };
 
@@ -268,7 +277,7 @@ const UserDashboard = () => {
   const [vehicle, setVehicle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreateDelivery = async (delivery) => {
+  const handleCreateDelivery = async () => {
     setIsLoading(true);
     
     try {
@@ -284,30 +293,23 @@ const UserDashboard = () => {
           customer_id: Cookies.get("userid") || "",
         }),
       });
-
+      console.log("Create Delivery Response:", response);
       if (response.ok) {
         const data = await response.json();
         setDeliveries([...deliveries, data]);
         console.log("Delivery created:", data);
-        
+        return true;
         // Keep loading for a bit longer to show the animation
-        setTimeout(() => {
-          setIsLoading(false);
-          alert(
-            `Delivery Created Successfully!\nPickup: ${delivery.pickup_location}\nDrop: ${delivery.dropoff_location}\nVehicle: ${delivery.vehicle_id}`
-          );
-          setPickup("");
-          setDrop("");
-          setVehicle("");
-        }, 3000); // Show loader for 3 seconds
+ // Show loader for 3 seconds
       } else {
         setIsLoading(false);
-        alert("Failed to create delivery. Please try again.");
+        return false;
+   
       }
     } catch (error) {
       console.error("Error creating delivery:", error);
       setIsLoading(false);
-      alert("Error creating delivery. Please check your connection and try again.");
+      return false;
     }
   };
 

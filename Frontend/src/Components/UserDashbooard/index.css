@@ -677,7 +677,24 @@ body {
     font-size: 1.25rem;
   }
 }
-
+ .logout-button{
+  margin-top: auto;
+  padding: 12px 16px;
+  background: #ffe3e3;
+  color: #c92a2a;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+ }
+.profile-img{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4dabf7;
+}
 /* Enhanced existing button styles */
 .btn.btn-secondary {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);

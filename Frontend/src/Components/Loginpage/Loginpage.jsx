@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router";
 
 const AuthPanel = () => {
+  const navigate = useNavigate();
+
   const [role, setRole] = useState("admin"); // 'admin', 'customer', 'driver'
   const [panel, setPanel] = useState("login"); // 'login', 'signup'
   const [errors, setErrors] = useState({});
@@ -102,86 +105,97 @@ const AuthPanel = () => {
   };
 
   // Submit
- // Submit
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setSuccessMessage("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSuccessMessage("");
 
-  let payload = {};
-  let url = "";
+    let payload = {};
+    let url = "";
 
-  if (role === "customer" && panel === "signup") {
-    payload = signcustomerData;
-    url = "http://localhost:3000/api/users/register";
-  } else if (role === "customer" && panel === "login") {
-    payload = logincustomerData;
-    url = "http://localhost:3000/api/users/login";
-  } else if (role === "driver" && panel === "signup") {
-    payload = signdriverData;
-    url = "http://localhost:3000/api/drivers/register";
-  } else if (role === "driver" && panel === "login") {
-    payload = logindriverData;
-    url = "http://localhost:3000/api/drivers/login";
-  } else if (role === "admin" && panel === "login") {
-    payload = adminData;
-    url = "http://localhost:3000/api/admin/login";
-  }
+    if (role === "customer" && panel === "signup") {
+      payload = signcustomerData;
+      url = "http://localhost:3000/api/users/register";
+    } else if (role === "customer" && panel === "login") {
+      payload = logincustomerData;
+      url = "http://localhost:3000/api/users/login";
+    } else if (role === "driver" && panel === "signup") {
+      payload = signdriverData;
+      url = "http://localhost:3000/api/drivers/register";
+    } else if (role === "driver" && panel === "login") {
+      payload = logindriverData;
+      url = "http://localhost:3000/api/drivers/login";
+    } else if (role === "admin" && panel === "login") {
+      payload = adminData;
 
-  if (!validate(payload)) {
-    console.error("Validation failed:", errors);
-    return;
-  }
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      console.log("API Response:", data);
-
-      setSuccessMessage(
-        panel === "login"
-          ? "Login successful!"
-          : "Account created successfully!"
-      );
-
-      // ✅ Save userid in cookie using js-cookie
-      if (role === "customer" && panel === "login" && data.userId) {
-        Cookies.set("userid", data.userId, { expires: 50 });
-        // expires: 1 = 1 day
+      // ✅ Admin special validation
+      if (
+        adminData.email === "venkat@gmail.com" &&
+        adminData.password === "A0612"
+      ) {
+        navigate("/admindashboard");
+        return;
+      } else {
+        setErrors({ password: "Invalid credentials" });
+        return;
       }
-      if (role === "driver" && panel === "login" && data.driverId) {
-        console.log("Setting driver ID cookie:", data.driverId);
-
-        Cookies.set("driverid", data.driverId, { expires: 50 });
-        Cookies.set("vehicle_id", data.vehicle_id, { expires: 50 });
-          console.log("Driver ID cookie set:", Cookies.get("driverid"));
-          console.log("Vehicle ID cookie set:", Cookies.get("vehicle_id"));
-        // expires: 1 = 1 day
-      }
-
-      setPanel("login");
-      setsignCustomerData({ username: "", email: "", password: "" });
-      setloginCustomerData({ email: "", password: "" });
     }
 
-    if (panel === "login") {
-      setLoggedIn(true);
-      setLoggedInRole(role);
+    if (!validate(payload)) {
+      console.error("Validation failed:", errors);
+      return;
     }
-  } catch (error) {
-    console.error("Network Error:", error);
-    alert("Network error. Please try again later.");
-  }
-};
 
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      console.log('response',response)
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("API Response:", data);
+
+        setSuccessMessage(
+          panel === "login"
+            ? "Login successful!"
+            : "Account created successfully!"
+        );
+
+        // ✅ Save userid in cookie using js-cookie
+        if (role === "customer" && panel === "login" && data.userId) {
+          Cookies.set('username', data.username, { expires: 50 });
+          Cookies.set("userid", data.userId, { expires: 50 });
+          navigate("/userdashboard");
+        }
+        if (role === "driver" && panel === "login" && data.driverId) {
+          Cookies.set("driverid", data.driverId, { expires: 50 });
+          Cookies.set('drivername', data.drivername, { expires: 50 });
+          Cookies.set("vehicle_id", data.vehicle_id, { expires: 50 });
+          console.log('data.vehicle_id:', data.vehicle_id);
+          console.log('driver')
+          navigate("/driverrequest");
+        }
+
+        setPanel("login");
+        setsignCustomerData({ username: "", email: "", password: "" });
+        setloginCustomerData({ email: "", password: "" });
+      }
+
+      if (panel === "login") {
+        setLoggedIn(true);
+        setLoggedInRole(role);
+      }
+
+    } catch (error) {
+      console.error("Network Error:", error);
+      alert("Network error. Please try again later.");
+    }
+  };
 
   // Render form fields
   const renderFormFields = () => {
@@ -495,7 +509,6 @@ const handleSubmit = async (e) => {
               Logout
             </button>
 
-            {/* Role-specific post-login content */}
             {loggedInRole === "customer" && (
               <form>
                 <h3>Customer Dashboard</h3>

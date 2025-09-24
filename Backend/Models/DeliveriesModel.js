@@ -1,60 +1,55 @@
-// models/Delivery.js
+// models/DeliveriesModel.js
 import mongoose from "mongoose";
 
-const deliverySchema = new mongoose.Schema({
-  delivery_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: () => new mongoose.Types.ObjectId(),
-    index: true,
-    unique: true,
+const deliverySchema = new mongoose.Schema(
+  {
+    customer_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Userrp",
+      required: true,
+    },
+    driver_id: {
+      type:String,
+      ref: "Driver",
+      default: null,
+    },
+    vehicle_id: {
+      type: String,
+      ref: "Vehicle",
+      default: null,
+    },
+    pickup_location: {
+      type: String,
+      required: true,
+    },
+    dropoff_location: {
+      type: String,
+      required: true,
+    },
+    scheduled_pickup_time: {
+      type: Date,
+      default: () => new Date(Date.now() + 5 * 60 * 1000), // 5 minutes later
+    },
+    scheduled_dropoff_time: {
+      type: Date,
+      default: () => new Date(Date.now() + 65 * 60 * 1000), // 65 minutes later
+    },
+    actual_pickup_time: {
+      type: Date,
+      default: null,
+    },
+    actual_dropoff_time: {
+      type: Date,
+      default: null,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "on_route", "delivered", "cancelled"],
+      default: "pending",
+    },
   },
-  customer_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Userrp",
-    required: true,
-  },
-  driver_id: {
-    type: String,
-    ref: "Driver",
-    default: null,
-  },
-  vehicle_id: {
-    type: String,
-    ref: "Driver",
-    default: null,
-  },
-  pickup_location: {
-    type: String, // can switch to GeoJSON later
-    required: true,
-  },
-  dropoff_location: {
-    type: String,
-    required: true,
-  },
-  scheduled_pickup_time: {
-    type: Date,
-    default: () => new Date(Date.now() + 5 * 60 * 1000), // 5 minutes from now
-    required: true,
-  },
-  scheduled_dropoff_time: {
-    type: Date,
-    default: () => new Date(Date.now() + 65 * 60 * 1000), // 5 minutes from now
-    required: true,
-  },
-  actual_pickup_time: {
-    type: Date,
-    default: () => new Date(Date.now()),
-  },
-  actual_dropoff_time: {
-    type: Date,
-    default: () => new Date(Date.now() + 60 * 60 * 1000),
-  },
-  status: {
-    type: String,
-    enum: ["pending", "on_route", "delivered", "cancelled"],
-    default: "pending",
-  },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 const Delivery = mongoose.model("Delivery", deliverySchema);
 

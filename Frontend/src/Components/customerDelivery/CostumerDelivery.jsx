@@ -1,114 +1,213 @@
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
+import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
+import { 
+  CheckCircleIcon, 
+  TruckIcon, 
+  MapPinIcon, 
+  UserCircleIcon, 
+  PhoneIcon, 
+  ExclamationTriangleIcon 
+} from '@heroicons/react/24/solid';
 import './index.css';
 
+// Establishes the connection to your server
+const socket = io("http://localhost:3000");
 
-// --- Style Injector ---
-// This component injects the styles directly into the document's head
-// to work around limitations in the build environment.
-
-
-
-// --- SVG Icons ---
-const DeliveriesIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon"><rect x="1" y="3" width="15" height="13" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" /></svg>
-);
-
-const ProfileIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-);
-
-const LogoutIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
-);
-
-// --- Components ---
-const Sidebar = () => (
-    <aside className="sidebar">
-        <div className="sidebar-inner-container">
-            <div className="sidebar-profile">
-                <img src="https://placehold.co/64x64/E7F5FF/1C7ED6?text=SM" alt="Sarah Miller" className="avatar" />
-                <h3 className="profile-name">Sarah Miller</h3>
-                <p className="profile-role">Driver</p>
+// --- Helper Component: Loading Skeleton ---
+// Displays an animated placeholder to improve perceived performance
+const LoadingSkeleton = () => (
+  <div className="page-container">
+    <div className="delivery-grid">
+      <div className="main-content-skeleton">
+        <div className="card skeleton-card">
+          <div className="skeleton-element skeleton-title"></div>
+          <div className="skeleton-element skeleton-text"></div>
+        </div>
+        <div className="card skeleton-card">
+          <div className="skeleton-element skeleton-title w-40"></div>
+          <div className="skeleton-timeline">
+            <div className="skeleton-timeline-item">
+              <div className="skeleton-element skeleton-icon"></div>
+              <div className="skeleton-element skeleton-text-full"></div>
             </div>
-            <nav className="sidebar-nav">
-                <a href="#" className="nav-item active">
-                    <DeliveriesIcon />
-                    <span>My Deliveries</span>
-                </a>
-                <a href="#" className="nav-item">
-                    <ProfileIcon />
-                    <span>Profile</span>
-                </a>
-            </nav>
-        </div>
-        <div className="sidebar-footer">
-             <a href="#" className="nav-item">
-                <LogoutIcon />
-                <span>Logout</span>
-            </a>
-        </div>
-    </aside>
-);
-
-const UpcomingDelivery = () => (
-    <div className="card upcoming-delivery-card">
-         <div className="delivery-header">
-            <h3 className="card-title">Order #12345</h3>
-            <span className="status-pill">Pending</span>
-        </div>
-        <div className="delivery-content">
-            <div className="delivery-details">
-                <div className="detail-item"><strong>Pickup:</strong> <span>123 Main St, Anytown, USA</span></div>
-                <div className="detail-item"><strong>Dropoff:</strong> <span>456 Oak Ave, Anytown, USA</span></div>
-                <div className="detail-item"><strong>Vehicle:</strong> <span>Ford Transit Van</span></div>
-                <div className="detail-item"><strong>Customer:</strong> <span>Alex Johnson (555-1234)</span></div>
+            <div className="skeleton-timeline-item">
+              <div className="skeleton-element skeleton-icon"></div>
+              <div className="skeleton-element skeleton-text-full"></div>
             </div>
-            <img src="https://placehold.co/150x100/f1f3f5/495057?text=Van" alt="Delivery Van" className="delivery-image" />
+            <div className="skeleton-timeline-item">
+              <div className="skeleton-element skeleton-icon"></div>
+              <div className="skeleton-element skeleton-text-full"></div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div className="sidebar-skeleton">
+        <div className="card skeleton-card">
+            <div className="skeleton-element skeleton-title w-40"></div>
+            <div className="skeleton-element skeleton-text-large"></div>
+        </div>
+        <div className="card skeleton-card">
+            <div className="skeleton-element skeleton-title w-40"></div>
+            <div className="skeleton-element skeleton-button"></div>
+        </div>
+      </div>
     </div>
+  </div>
 );
 
-const DeliveryStatusControl = () => (
-    <div className="card delivery-status-card">
-        <h3 className="card-title">Delivery Status Control</h3>
-        <p className="status-description">Update the current status of your delivery.</p>
-        <div className="status-buttons">
-            <button className="status-btn btn-pending">Pending</button>
-            <button className="status-btn btn-on-route">On Route</button>
-            <button className="status-btn btn-delivered">Delivered</button>
-        </div>
+// --- Helper Component: Timeline Step ---
+// Renders a single step in the delivery progress timeline
+// --- Helper Component: Timeline Step ---
+const TimelineStep = ({ icon: Icon, title, description, isCompleted, isLast }) => (
+  <div className="timeline-step">
+    <div className="timeline-step__connector">
+      <div className={`timeline-step__icon ${isCompleted ? 'completed' : ''}`}>
+        <Icon className="icon" />
+      </div>
+      {!isLast && <div className={`timeline-step__line ${isCompleted ? 'completed' : ''}`} />}
     </div>
-);
-
-const MapView = () => (
-    <div className="card map-view-card">
-        <h3 className="card-title">Map View</h3>
-        <img src="https://placehold.co/600x600/E9ECEF/ADB5BD?text=Map+View" alt="Map View of Delivery Route" className="map-image" />
-        <div className="map-info">
-            <p>Live Route: <strong>Anytown</strong></p>
-            <p className="last-updated">Last updated: Just now</p>
-        </div>
+    <div className="timeline-step__content">
+      <p className={`timeline-step__title ${isCompleted ? 'completed' : ''}`}>{title}</p>
+      <p className="timeline-step__description">{description}</p>
     </div>
+  </div>
 );
 
 
-const Dashboard = () => {
+// --- Main Component ---
+const CustomerDelivery = ({ deliveryCreated }) => {
+  // State to manage loading status
+  const [isLoading, setIsLoading] = useState(deliveryCreated);
+  // State to hold delivery data from the server
+  const [delivery, setDelivery] = useState(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+  const userId = Cookies.get("userid");
+  if (userId) {
+    socket.emit("registerUser", userId);
+  }
+
+  socket.on("deliveryAssigned", (deliveryData) => {
+    console.log("✅ Event 'deliveryAssigned' received:", deliveryData);
+    setDelivery(deliveryData);
+    setIsLoading(false);
+  });
+
+  socket.on("delivery_deleted", (data) => {
+    console.log("🗑️ Event 'delivery_deleted' received:", data);
+    // If the currently viewed delivery was deleted
+    if (delivery && delivery._id === data.deliveryId) {
+      navigate('/userdashboard', { replace: true });
+    }
+  });
+
+  return () => {
+    socket.off("deliveryAssigned");
+    socket.off("delivery_deleted");
+  };
+}, [delivery, navigate]);
+// Empty dependency array ensures this runs only once
+
+  // 1. Loading State
+  if (isLoading) {
+    return <LoadingSkeleton />;
+  }
+
+  // 2. Awaiting Driver State (after initial load)
+  if (!delivery || !delivery.driver_id) {
     return (
-        <div className="driver-dashboard-container">
-            <Sidebar />
-            <main className="main-content">
-                <header className="main-header">
-                    <h1>Dashboard</h1>
-                    <p>Welcome back, Sarah!</p>
-                </header>
-                <div className="dashboard-grid">
-                    <UpcomingDelivery />
-                    <DeliveryStatusControl />
-                    <MapView />
-                </div>
-            </main>
-        </div>
+      <div className="status-page">
+        <ExclamationTriangleIcon className="status-page__icon" />
+        <h2 className="status-page__title">Awaiting Driver Assignment</h2>
+        <p className="status-page__description">We are finding the nearest driver for your delivery. This screen will update automatically.</p>
+      </div>
     );
+  }
+
+  // 3. Main UI when delivery and driver are assigned
+  const { driver_id: driver, status, scheduled_dropoff_time } = delivery;
+  const statusLower = status.toLowerCase();
+
+  const timelineSteps = [
+    { icon: CheckCircleIcon, title: 'Order Confirmed', description: 'Your request has been received.', isCompleted: true },
+    { icon: UserCircleIcon, title: 'Driver Assigned', description: `${driver.username} is on the way.`, isCompleted: true },
+    { icon: TruckIcon, title: 'In Transit', description: 'Your package is on its way to the destination.', isCompleted: statusLower === 'on route' || statusLower === 'delivered' },
+    { icon: MapPinIcon, title: 'Delivered', description: 'Your package has been delivered successfully.', isCompleted: statusLower === 'delivered' }
+  ];
+
+  const handleCancel = async () => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/deliveries/${delivery._id}/cancel`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get("token")}`
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to cancel delivery');
+    }
+
+    const data = await res.json();
+    console.log("🚫 Delivery cancellation request sent:", data);
+
+    // The socket event will handle navigation
+  } catch (error) {
+    console.error("❌ Error cancelling delivery:", error);
+  }
 };
 
-export default Dashboard;
 
+  return (
+    <div className="page-container">
+      <header className="page-header">
+        <h1>Delivery is <span className="highlight">{statusLower === 'on route' ? "on its way" : "being prepared"}!</span></h1>
+        {/* ✅ FIXED THE LINE BELOW */}
+        <p>Order ID: #{delivery._id.substring(0, 8).toUpperCase()}</p>
+      </header>
+
+      <div className="delivery-grid">
+        {/* --- Main Content: Timeline --- */}
+        <main className="card">
+          <h2 className="card__title">Delivery Progress</h2>
+          <div className="timeline">
+            {timelineSteps.map((step, index) => (
+              <TimelineStep key={step.title} {...step} isLast={index === timelineSteps.length - 1} />
+            ))}
+          </div>
+        </main>
+
+        {/* --- Sidebar: ETA & Driver Info --- */}
+        <aside className="sidebar">
+          <div className="card card--accent">
+            <p className="card__subtitle">Estimated Delivery</p>
+            <p className="card__highlight-text">{new Date(scheduled_dropoff_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+          </div>
+          
+          <div className="card">
+            <h3 className="card__title">Your Driver</h3>
+            <div className="driver-info">
+              <UserCircleIcon className="driver-info__avatar"/>
+              <div className="driver-info__details">
+                <p className="driver-info__name">{driver.username}</p>
+                <p className="driver-info__rating">⭐️ 4.9 Rating</p>
+              </div>
+            </div>
+            <div className="driver-info__vehicle">
+                <p>{driver.model} - <span className="license-plate">{driver.license_plate}</span></p>
+            </div>
+            <button className="button" onClick={handleCancel}>
+            
+              Cancel Ride
+            </button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+};
+
+export default CustomerDelivery;

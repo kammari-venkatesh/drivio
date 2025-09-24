@@ -43,6 +43,19 @@ const registerDriverFunction = async (req, res) => {
     }
 }
 
+const getalldrivers = async (req, res) => {
+    try {
+        const drivers = await DriverModel.find();
+        res.status(200).json({
+            message: 'Drivers retrieved successfully',
+            status: 'success',
+            data: drivers
+        });
+    } catch (error) {
+        console.error('Error retrieving drivers:', error);
+        res.status(500).json({ status: 'failed', message: 'Failed to retrieve drivers', error: error.message });
+    }
+}
 
 
 const loginDriverFunction = async function(req, res) {
@@ -62,7 +75,7 @@ const loginDriverFunction = async function(req, res) {
             message: 'Driver logged in successfully',
             status: 'success',
             token: token,
-          
+            drivername: driver.username,
              driverId: driver._id,
             vehicle_id: driver.vehicle_id
         });
@@ -86,4 +99,4 @@ const getAvailableDrivers = async (req, res) => {
     }
 }
 
-export { validateDriverDetails, registerDriverFunction , loginDriverFunction , getAvailableDrivers };
+export { validateDriverDetails, registerDriverFunction , loginDriverFunction , getAvailableDrivers, getalldrivers };

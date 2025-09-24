@@ -102,6 +102,18 @@ const addNewUser = async (req,res) => {
 };
 
 
+const getallusers = async (req, res) => {
+  try {
+      const users = await UserrpModel.find();
+      res.status(200).json({
+          message: 'Users fetched successfully',
+          users: users
+      });
+  } catch (error) {
+      console.error('Error fetching users:', error.message);
+      res.status(500).json({ message: 'Server error fetching users.' });
+  }
+};
 
 
 
@@ -109,6 +121,5 @@ const addNewUser = async (req,res) => {
 
 
 
-
-export { Validateuserdetails, addNewUser , getuserVerified, loginUserfunction };
+export { Validateuserdetails, addNewUser , getuserVerified, loginUserfunction, getallusers };
 

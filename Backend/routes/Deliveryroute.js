@@ -1,12 +1,32 @@
-import express from "express"
-import { validateDeliveryDetails, createDelivery, getPendingDeliveries,assignDelivery } from '../Controllers/Deliverycontroller.js';
-const deliveryRouter = express.Router();
+// routes/Deliveryroute.js
+import express from "express";
+import {
+  createDelivery,
+  getPendingDeliveries,
+  assignDelivery,
+  validateDeliveryDetails,
+  getalldeliveries,
+  deleteDeliverybyid,
+  getDeliveryById,
+  updatedDeliveryStatus,
+  cancelDeliveryById
+} from "../Controllers/Deliverycontroller.js";
 
+const router = express.Router();
 
+// Create delivery
+router.post("/setdelivery", validateDeliveryDetails, createDelivery);
 
-deliveryRouter.post('/setdelivery', validateDeliveryDetails, createDelivery);
-deliveryRouter.get('/pending', getPendingDeliveries);
-deliveryRouter.put("/:id/assign", assignDelivery)
+// Get pending deliveries
+router.get("/pending", getPendingDeliveries);
 
+// Assign delivery to driver
+router.put("/:id/assign", assignDelivery);
 
-export default deliveryRouter;
+router.get("/all", getalldeliveries);
+router.delete("/:id/cancel", deleteDeliverybyid);
+
+router.delete('/deliveries/:id/cancel', (req, res) => cancelDeliveryById(req, res));
+router.get("/:id", getDeliveryById);
+router.put("/:id/status", updatedDeliveryStatus);
+export default router;

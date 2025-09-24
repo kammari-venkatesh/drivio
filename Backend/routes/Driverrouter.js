@@ -1,5 +1,5 @@
 import express from "express"
-import { validateDriverDetails, registerDriverFunction , loginDriverFunction , getAvailableDrivers } from '../Controllers/Driverauthcontroller.js';
+import { validateDriverDetails, registerDriverFunction , getalldrivers, loginDriverFunction , getAvailableDrivers } from '../Controllers/Driverauthcontroller.js';
 const driverRouter = express.Router();
 
 
@@ -7,7 +7,7 @@ const driverRouter = express.Router();
 driverRouter.post('/register', validateDriverDetails, registerDriverFunction);
 driverRouter.post('/login', loginDriverFunction);
 driverRouter.get('/available',getAvailableDrivers);
-
+driverRouter.get('/all', getalldrivers);
 
 
 
