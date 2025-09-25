@@ -60,7 +60,7 @@ const LoadingSkeleton = () => (
 // --- Helper Component: Timeline Step ---
 // Renders a single step in the delivery progress timeline
 // --- Helper Component: Timeline Step ---
-const TimelineStep = ({ icon: Icon, title, description, isCompleted, isLast }) => (
+const TimelineStep = ({  title, description, isCompleted, isLast }) => (
   <div className="timeline-step">
     <div className="timeline-step__connector">
       <div className={`timeline-step__icon ${isCompleted ? 'completed' : ''}`}>
