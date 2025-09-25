@@ -5,7 +5,7 @@
 // import io from "socket.io-client";
 
 // // Connect to the backend
-// const socket = io("http://localhost:3000");
+// const socket = io("https://drivio-1uea.onrender.com");
 
 // const DriverAcceptPage = () => {
 //   const deliveryId = Cookies.get("deliveryId") || "";
@@ -20,7 +20,7 @@
 //     // Initial fetch
 //     const fetchDeliveryDetails = async () => {
 //       try {
-//         const response = await fetch(`http://localhost:3000/api/deliveries/${cleanId}`, {
+//         const response = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${cleanId}`, {
 //           method: 'GET',
 //           headers: { 
 //             "Content-Type": "application/json",
@@ -72,7 +72,7 @@
 
 //   const handleComplete = async () => {
 //     try {
-//       const res = await fetch(`http://localhost:3000/api/deliveries/${delivery._id}/status`, {
+//       const res = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${delivery._id}/status`, {
 //         method: 'PUT',
 //         headers: {
 //           'Content-Type': 'application/json',
@@ -92,7 +92,7 @@
 
 //   const handleCancel = async () => {
 //     try {
-//       const res = await fetch(`http://localhost:3000/api/deliveries/${delivery._id}/cancel`, {
+//       const res = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${delivery._id}/cancel`, {
 //         method: 'DELETE',
 //         headers: {
 //           'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ import { useNavigate } from 'react-router';
 import io from "socket.io-client";
 
 // Connect to backend
-const socket = io("http://localhost:3000");
+const socket = io("https://drivio-1uea.onrender.com");
 
 const DriverAcceptPage = () => {
   const deliveryId = Cookies.get("deliveryId") || "";
@@ -251,7 +251,7 @@ const DriverAcceptPage = () => {
     // Fetch initial delivery details
     const fetchDeliveryDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/deliveries/${cleanId}`, {
+        const response = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${cleanId}`, {
           method: 'GET',
           headers: { 
             "Content-Type": "application/json",
@@ -315,7 +315,7 @@ const DriverAcceptPage = () => {
   // Mark delivery as completed
   const handleComplete = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/deliveries/${delivery._id}/status`, {
+      const res = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${delivery._id}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -336,7 +336,7 @@ const DriverAcceptPage = () => {
   // Cancel delivery
   const handleCancel = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/deliveries/${delivery._id}/cancel`, {
+      const res = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${delivery._id}/cancel`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

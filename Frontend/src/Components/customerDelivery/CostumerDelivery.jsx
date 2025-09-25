@@ -13,7 +13,7 @@ import {
 import './index.css';
 
 // Establishes the connection to your server
-const socket = io("http://localhost:3000");
+const socket = io("https://drivio-1uea.onrender.com");
 
 // --- Helper Component: Loading Skeleton ---
 // Displays an animated placeholder to improve perceived performance
@@ -139,7 +139,7 @@ const CustomerDelivery = ({ deliveryCreated }) => {
 
   const handleCancel = async () => {
   try {
-    const res = await fetch(`http://localhost:3000/api/deliveries/${delivery._id}/cancel`, {
+    const res = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${delivery._id}/cancel`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

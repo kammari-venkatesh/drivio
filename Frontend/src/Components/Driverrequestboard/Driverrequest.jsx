@@ -324,7 +324,7 @@ const BookingRequestsPage = () => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000");
+    const socket = io("https://drivio-1uea.onrender.com");
     socket.on("new_delivery_request", (delivery) => {
       setRequests(prev => [delivery, ...prev]);
     });
@@ -336,7 +336,7 @@ const BookingRequestsPage = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/deliveries/pending", {
+        const res = await fetch("https://drivio-1uea.onrender.com/api/deliveries/pending", {
           method: 'GET',
           headers: {
             "Authorization": `Bearer ${Cookies.get('token')}`,
@@ -356,8 +356,8 @@ const BookingRequestsPage = () => {
 
   const handleAccept = async (deliveryId) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/deliveries/${deliveryId}/assign`, {
-        method: "PUT",
+            const res = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${deliveryId}/assign`, {
+              method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ driver_id: Cookies.get("driverid"), vehicle_id: Cookies.get("vehicle_id"), status: "on_route" }),
       });

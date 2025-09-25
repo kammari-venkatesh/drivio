@@ -198,7 +198,7 @@ const AvailableDrivers = () => {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/drivers/available", {
+        const response = await fetch("https://drivio-1uea.onrender.com/api/drivers/available", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -281,7 +281,7 @@ const UserDashboard = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch("http://localhost:3000/api/deliveries/setdelivery", {
+      const response = await fetch("https://drivio-1uea.onrender.com/api/deliveries/setdelivery", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

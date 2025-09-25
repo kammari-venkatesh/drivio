@@ -12,7 +12,7 @@ const FleetManager = () => {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/drivers/all');
+        const response = await fetch('https://drivio-1uea.onrender.com/api/drivers/all');
         const data = await response.json();
         if (response.ok) setDrivers(data.data);
       } catch (error) {
@@ -26,7 +26,7 @@ const FleetManager = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/users/all');
+        const response = await fetch('https://drivio-1uea.onrender.com/api/users/all');
         const data = await response.json();
         if (response.ok) setCustomers(data.users);
       } catch (error) {
@@ -40,7 +40,7 @@ const FleetManager = () => {
   useEffect(() => {
     const fetchDeliveries = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/deliveries/all');
+        const response = await fetch('https://drivio-1uea.onrender.com/api/deliveries/all');
         const data = await response.json();
         if (response.ok) setDeliveries(data.data);
       } catch (error) {

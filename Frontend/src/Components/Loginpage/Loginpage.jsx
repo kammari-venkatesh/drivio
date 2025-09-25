@@ -114,16 +114,16 @@ const AuthPanel = () => {
 
     if (role === "customer" && panel === "signup") {
       payload = signcustomerData;
-      url = "http://localhost:3000/api/users/register";
+      url = "https://drivio-1uea.onrender.com/api/users/register";
     } else if (role === "customer" && panel === "login") {
       payload = logincustomerData;
-      url = "http://localhost:3000/api/users/login";
+      url = "https://drivio-1uea.onrender.com/api/users/login";
     } else if (role === "driver" && panel === "signup") {
       payload = signdriverData;
-      url = "http://localhost:3000/api/drivers/register";
+      url = "https://drivio-1uea.onrender.com/api/drivers/register";
     } else if (role === "driver" && panel === "login") {
       payload = logindriverData;
-      url = "http://localhost:3000/api/drivers/login";
+      url = "https://drivio-1uea.onrender.com/api/drivers/login";
     } else if (role === "admin" && panel === "login") {
       payload = adminData;
 
