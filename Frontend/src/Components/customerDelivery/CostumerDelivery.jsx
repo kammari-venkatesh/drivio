@@ -64,7 +64,6 @@ const TimelineStep = ({  title, description, isCompleted, isLast }) => (
   <div className="timeline-step">
     <div className="timeline-step__connector">
       <div className={`timeline-step__icon ${isCompleted ? 'completed' : ''}`}>
-        <Icon className="icon" />
       </div>
       {!isLast && <div className={`timeline-step__line ${isCompleted ? 'completed' : ''}`} />}
     </div>
