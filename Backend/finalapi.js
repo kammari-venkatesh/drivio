@@ -21,7 +21,7 @@ const userSockets = new Map();
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://drivio-sand.vercel.app"], // frontend URLs
+    origin: ["http://localhost:5173", "https://drivio-k3wk.vercel.app"], // frontend URLs
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
