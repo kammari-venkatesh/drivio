@@ -15,7 +15,25 @@ const validateDriverDetails = (req, res, next) => {
 }   
 
 
+const getUnverifiedDrivers = async (req, res) => {
+  try {
+    // Find all drivers where isVerified is false
+    const unverifiedDrivers = await DriverModel.find({ isVerified: false });
 
+    res.status(200).json({
+      message: 'Unverified drivers retrieved successfully',
+      status: 'success',
+      data: unverifiedDrivers,
+    });
+  } catch (error) {
+    console.error('Error retrieving unverified drivers:', error);
+    res.status(500).json({
+      message: 'Failed to retrieve unverified drivers',
+      status: 'failed',
+      error: error.message,
+    });
+  }
+};
 
 
 
@@ -131,5 +149,59 @@ const getAvailableDrivers = async (req, res) => {
         res.status(500).json({ status: 'failed', message: 'Failed to retrieve available drivers', error: error.message });
     }
 }
+const verifyDriverFunction = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-export { validateDriverDetails, registerDriverFunction , loginDriverFunction , getAvailableDrivers, getalldrivers };
+    const driver = await DriverModel.findByIdAndUpdate(
+      id,
+      { isVerified: true },
+      { new: true }
+    );
+
+    if (!driver) {
+      return res.status(404).json({ status: 'failed', message: 'Driver not found' });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Driver verified successfully',
+      data: driver
+    });
+  } catch (error) {
+    console.error('Error verifying driver:', error);
+    res.status(500).json({
+      status: 'failed',
+      message: 'Failed to verify driver',
+      error: error.message
+    });
+  }
+};
+const deleteDriver = async (req, res) => {
+  const driverId = req.params.id;
+
+  try {
+    const deletedDriver = await DriverModel.findByIdAndDelete(driverId);
+
+    if (!deletedDriver) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Driver not found',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Driver deleted successfully',
+    });
+  } catch (error) {
+    console.error('Error deleting driver:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error while deleting driver',
+      error: error.message,
+    });
+  }
+};
+
+export { validateDriverDetails, registerDriverFunction ,deleteDriver,verifyDriverFunction ,getUnverifiedDrivers, loginDriverFunction , getAvailableDrivers, getalldrivers };
