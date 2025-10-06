@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 const LoginPanel = () => {
   const [role, setRole] = useState("customer"); 
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState(""); // ✅ for displaying errors
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,6 +16,7 @@ const LoginPanel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage(""); // reset error on submit
     let url = "";
 
     if (role === "customer") {
@@ -26,7 +28,7 @@ const LoginPanel = () => {
         navigate("/admindashboard");
         return;
       } else {
-        alert("Invalid Admin Credentials");
+        setErrorMessage("Invalid Admin Credentials");
         return;
       }
     }
@@ -38,6 +40,7 @@ const LoginPanel = () => {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
+      console.log("Login response data:", data); // Debug log
       if (res.ok) {
         if (role === "customer") {
           Cookies.set("userid", data.userId, { expires: 50 });
@@ -47,11 +50,12 @@ const LoginPanel = () => {
           navigate("/driverrequest");
         }
       } else {
-        alert(data.message || "Login failed");
+        // ✅ show error message on page
+        setErrorMessage(data.message || "Login failed");
       }
     } catch (err) {
       console.error(err);
-      alert("Network error");
+      setErrorMessage("Network error");
     }
   };
 
@@ -62,18 +66,17 @@ const LoginPanel = () => {
         <p className="auth-subheading">Select role and login to Drivio</p>
 
         <div className="form-group">
-     <label htmlFor="role">Role</label>
-<select
-  id="role"
-  className="custom-select"
-  value={role}
-  onChange={(e) => setRole(e.target.value)}
->
-  <option value="admin">Admin</option>
-  <option value="customer">User</option>
-  <option value="driver">Driver</option>
-</select>
-
+          <label htmlFor="role">Role</label>
+          <select
+            id="role"
+            className="custom-select"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="admin">Admin</option>
+            <option value="customer">User</option>
+            <option value="driver">Driver</option>
+          </select>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -100,9 +103,11 @@ const LoginPanel = () => {
           </div>
 
           <button type="submit" className="submit-btn">Login</button>
+
+          {/* ✅ Show error message here */}
+{errorMessage && <p className="error-message">{errorMessage}</p>}
         </form>
 
-        {/* Toggle link */}
         <p className="toggle-text">
           Don’t have an account?{" "}
           <span

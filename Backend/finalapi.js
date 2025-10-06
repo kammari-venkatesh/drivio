@@ -14,6 +14,7 @@ app.use(express.json());
 
 // Connect to database
 connectDB();
+console.log("🚀 Server file is running!"); // <-- ADD THIS LINE
 
 // Create HTTP server
 const server = http.createServer(app);

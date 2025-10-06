@@ -49,6 +49,17 @@ body {
   background-position: right 12px center;
   background-size: 12px;
 }
+.error-message {
+  color: #ff4d4f;       /* bright red */
+  background-color: #ffe6e6; /* light red background */
+  padding: 8px 12px;
+  margin-top: 10px;
+  border: 1px solid #ff4d4f;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
 
 .custom-select:focus {
   border-color: #3b82f6; /* blue border */

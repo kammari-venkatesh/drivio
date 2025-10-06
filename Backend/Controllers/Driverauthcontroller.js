@@ -22,6 +22,8 @@ const validateDriverDetails = (req, res, next) => {
 
 const registerDriverFunction = async (req, res) => {
   try {
+    console.log("🚀register is running!"); // <-- ADD THIS LINE
+
     const { username, email, password, vehicle_id, license_plate, model, capacity } = req.body;
     console.log("Registering driver with data:", req.body); // Debug log
     // Force isVerified = false here
@@ -69,34 +71,52 @@ const getalldrivers = async (req, res) => {
         res.status(500).json({ status: 'failed', message: 'Failed to retrieve drivers', error: error.message });
     }
 }
+console.log("🚀 controller file is running!"); // <-- ADD THIS LINE
 
 
 const loginDriverFunction = async function(req, res) {
-    try {
-      const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ message: 'Email and password are required.', status: 'failed' });
-        }
-        const driver = await DriverModel.findOne({ email, password });
-        if (!driver) {
-            return res.status(401).json({ message: 'Invalid credentials.', status: 'failed' });
-        }
-        const payload = { driverId: driver._id };
-        const token = await jwtSignAsync(payload, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-        console.log('Driver logged in:', driver);
-        res.status(200).json({
-            message: 'Driver logged in successfully',
-            status: 'success',
-            token: token,
-            drivername: driver.username,
-             driverId: driver._id,
-            vehicle_id: driver.vehicle_id
-        });
-    } catch (error) {
-        console.error('Error logging in driver:', error);
-        res.status(500).json({ status: 'failed', message: 'Driver login failed', error: error.message });
+  try {
+    const { email, password } = req.body;
+    console.log("Driver login attempt with:", req.body); // Debug log
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required.', status: 'failed' });
     }
+
+   const driver = await DriverModel.findOne({ email, password });
+if (!driver) {
+  return res.status(401).json({ 
+    message: 'Invalid credentials.', 
+    status: 'failed' 
+  });
 }
+if (!driver.isVerified) {
+  return res.status(403).json({ 
+    message: 'Driver is not verified yet. Please wait for verification.', 
+    status: 'failed' 
+  });
+}
+
+
+    const payload = { driverId: driver._id };
+    const token = await jwtSignAsync(payload, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+
+    console.log('Driver logged in:', driver);
+
+    res.status(200).json({
+      message: 'Driver logged in successfully',
+      status: 'success',
+      token: token,
+      drivername: driver.username,
+      driverId: driver._id,
+      vehicle_id: driver.vehicle_id,
+      driver: "driver",
+      driver: driver
+    });
+  } catch (error) {
+    console.error('Error logging in driver:', error);
+    res.status(500).json({ status: 'failed', message: 'Driver login failed', error: error.message });
+  }
+};
 
 const getAvailableDrivers = async (req, res) => {
     try {
