@@ -1,4 +1,3 @@
-// models/driver.model.js
 import mongoose from "mongoose";
 
 const driverSchema = new mongoose.Schema(
@@ -43,9 +42,14 @@ const driverSchema = new mongoose.Schema(
       enum: ["available", "on_route", "unavailable"],
       default: "available",
     },
+    
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
-    timestamps: true, // adds createdAt & updatedAt
+    timestamps: true,
   }
 );
 

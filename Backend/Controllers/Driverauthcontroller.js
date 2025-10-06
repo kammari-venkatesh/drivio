@@ -15,33 +15,46 @@ const validateDriverDetails = (req, res, next) => {
 }   
 
 
+
+
+
+
+
 const registerDriverFunction = async (req, res) => {
-    try {
-        const { username, email, password, vehicle_id, license_plate, model, capacity } = req.body;
-       
-        const driver= await DriverModel.create({
-            username,
-            email,
-            password,
-            vehicle_id,
-            license_plate,
-            model,
-            capacity
-        });
-        res.status(201).json({
-             message: 'Driver registered successfully', 
-            status: 'success',
-           
-        });
-    } catch (error) {
-        console.error('Error registering driver:', error);
-        res.status(500).json({ 
-            status: 'failed',
-            message: 'Driver registration failed',
-            error: error.message
-        });     
-    }
-}
+  try {
+    const { username, email, password, vehicle_id, license_plate, model, capacity } = req.body;
+    console.log("Registering driver with data:", req.body); // Debug log
+    // Force isVerified = false here
+    const driver = await DriverModel.create({
+      username,
+      email,
+      password,
+      vehicle_id,
+      license_plate,
+      model,
+      capacity,
+      isVerified: false, // ALWAYS false
+    });
+
+    console.log("New driver created:", driver); // Debug log
+
+    res.status(201).json({
+      message: "Driver registered successfully",
+      status: "success",
+      driverId: driver._id,
+      isVerified: driver.isVerified,
+    });
+  } catch (error) {
+    console.error("Error registering driver:", error);
+    res.status(500).json({
+      status: "failed",
+      message: "Driver registration failed",
+      error: error.message,
+    });
+  }
+};
+
+
 
 const getalldrivers = async (req, res) => {
     try {

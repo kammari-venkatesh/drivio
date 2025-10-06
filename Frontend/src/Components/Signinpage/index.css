@@ -28,34 +28,6 @@ body {
   padding: 20px;
 
 }
-.custom-select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #333;
-  font-size: 14px;
-  cursor: pointer;
-
-  /* Remove browser default */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-
-  /* Custom dropdown arrow */
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23666' d='M0 0l5 6 5-6H0z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px;
-}
-
-.custom-select:focus {
-  border-color: #3b82f6; /* blue border */
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
-}
-
 input{
   color: black;
 }
