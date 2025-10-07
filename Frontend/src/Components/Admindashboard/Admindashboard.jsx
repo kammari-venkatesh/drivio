@@ -20,12 +20,32 @@ const FleetManager = () => {
   const navigate = useNavigate();
 
   // --- Fetch data on mount ---
-  useEffect(() => {
-    fetchDrivers();
-    fetchUnverifiedDrivers();
-    fetchCustomers();
-    fetchCustomerRequests();
-  }, []);
+// --- Add deliveries state ---
+const [deliveries, setDeliveries] = useState([]);
+
+// --- Fetch deliveries ---
+const fetchDeliveries = async () => {
+  try {
+    const res = await fetch("https://drivio-1uea.onrender.com/api/deliveries/all", {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setDeliveries(data.data || []); // adjust key if your backend returns differently
+    }
+  } catch (err) {
+    console.error("Error fetching deliveries:", err);
+  }
+};
+
+// --- Call it in useEffect ---
+useEffect(() => {
+  fetchDrivers();
+  fetchUnverifiedDrivers();
+  fetchCustomers();
+  fetchCustomerRequests();
+  fetchDeliveries();   // ✅ add this
+}, []);
 
   const fetchDrivers = async () => {
     try {
