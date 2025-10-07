@@ -67,7 +67,7 @@ const FleetManager = () => {
     setRequestsLoading(true);
     try {
       const res = await fetch(
-        "http://localhost:3000/api/requests/pending",
+        "https://drivio-1uea.onrender.com/api/requests/pending",
         { headers: { Authorization: `Bearer ${Cookies.get("token")}` } }
       );
       if (res.ok) {
@@ -151,7 +151,7 @@ const FleetManager = () => {
 
         // Remove request after creating delivery
         await fetch(
-          `http://localhost:3000/api/requests/delete/${request._id}`,
+          `https://drivio-1uea.onrender.com/api/requests/delete/${request._id}`,
           { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}` } }
         );
 
@@ -171,7 +171,7 @@ const FleetManager = () => {
     console.log("delete id",id)
     try {
       const res = await fetch(
-        `http://localhost:3000/api/requests/delete/${id}`,
+        `https://drivio-1uea.onrender.com/api/requests/delete/${id}`,
         { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}` } }
       );
       if (res.ok) {

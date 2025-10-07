@@ -289,7 +289,7 @@ const handleCreateDelivery = async () => {
     };
     console.log("requestdata",requestData)
     const response = await fetch(
-      "http://localhost:3000/api/requests/addrequest", // correct URL
+      "https://drivio-1uea.onrender.com/api/requests/addrequest",
       {
         method: "POST",
         headers: {
