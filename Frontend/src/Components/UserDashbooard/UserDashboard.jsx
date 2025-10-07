@@ -276,42 +276,56 @@ const UserDashboard = () => {
   const [drop, setDrop] = useState("");
   const [vehicle, setVehicle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+const handleCreateDelivery = async () => {
+  setIsLoading(true);
 
-  const handleCreateDelivery = async () => {
-    setIsLoading(true);
-    
-    try {
-      const response = await fetch("https://drivio-1uea.onrender.com/api/deliveries/setdelivery", {
+  try {
+    // Prepare request payload
+    const requestData = {
+      customer_id: Cookies.get("userid") || "",
+      pickup_location: pickup,
+      dropoff_location: drop,
+      vehicle_type: vehicle, // optional
+    };
+    console.log("requestdata",requestData)
+    const response = await fetch(
+      "http://localhost:3000/api/requests/addrequest", // correct URL
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          Authorization: `Bearer ${Cookies.get("token")}`, // if using auth
         },
-        body: JSON.stringify({
-          pickup_location: pickup,
-          dropoff_location: drop,
-          customer_id: Cookies.get("userid") || "",
-        }),
-      });
-      console.log("Create Delivery Response:", response);
-      if (response.ok) {
-        const data = await response.json();
-        setDeliveries([...deliveries, data]);
-        console.log("Delivery created:", data);
-        return true;
-        // Keep loading for a bit longer to show the animation
- // Show loader for 3 seconds
-      } else {
-        setIsLoading(false);
-        return false;
-   
+        body: JSON.stringify(requestData),
       }
-    } catch (error) {
-      console.error("Error creating delivery:", error);
+    );
+
+    if (!response.ok) {
+      // If server responds with error status
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Failed to create delivery request:", errorData);
+      alert(
+        errorData.message || "Failed to create delivery request. Please try again."
+      );
       setIsLoading(false);
       return false;
     }
-  };
+
+    const data = await response.json();
+    console.log("Delivery request created:", data);
+
+    // Update local state to show in user dashboard
+    setDeliveries((prev) => [...prev, data.request]);
+    setIsLoading(false);
+    return true;
+  } catch (error) {
+    console.error("Error creating delivery request:", error);
+    alert("Server error while creating delivery request. Try again later.");
+    setIsLoading(false);
+    return false;
+  }
+};
+
 
   const handleBackToForm = () => {
     setIsLoading(false);

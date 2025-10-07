@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import userAuthRouter from "./routes/UserAuthrouter.js";
 import driverRouter from "./routes/Driverrouter.js";
 import deliveryRouter from "./routes/Deliveryroute.js";
+import requestrouter from "./routes/userrequestroute.js";
 import cors from "cors";
 
 const app = express();
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 app.use("/api/users", userAuthRouter);
 app.use("/api/drivers", driverRouter);
 app.use("/api/deliveries", deliveryRouter);
+app.use("/api/requests", requestrouter);
 
 // Basic route
 app.get("/", (req, res) => {

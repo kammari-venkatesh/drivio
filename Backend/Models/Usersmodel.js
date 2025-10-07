@@ -36,7 +36,7 @@ const userSchema = new Schema({
 });
 
 // 2. Create the User Model from the Schema
-const UserrpModel = mongoose.model('Userrp', userSchema);
+const User = mongoose.model('User', userSchema);
 
 // 3. Export the Model
-export default UserrpModel;
+export default User;
