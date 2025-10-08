@@ -42,6 +42,11 @@ const LoginPanel = () => {
       const data = await res.json();
       console.log("Login response data:", data); // Debug log
       if (res.ok) {
+        // Save the authentication token
+        if (data.token) {
+          Cookies.set("token", data.token, { expires: 50 });
+        }
+
         if (role === "customer") {
           Cookies.set("userid", data.userId, { expires: 50 });
           navigate("/userdashboard");

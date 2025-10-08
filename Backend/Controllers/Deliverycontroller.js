@@ -1,6 +1,6 @@
 // controllers/DeliveriesController.js
 import Delivery from "../Models/DeliveriesModel.js";
-import UserrpModel from "../Models/Usersmodel.js";
+import User from "../Models/Usersmodel.js";  // Fixed model import
 import { userSockets } from "../finalapi.js"; // ✅ now available
 
 export const validateDeliveryDetails = (req, res, next) => {
@@ -83,6 +83,15 @@ export const createDelivery = async (req, res) => {
     const { pickup_location, dropoff_location, customer_id } = req.body;
     console.log("Create Delivery Request Body:", req.body);
 
+    // Verify customer exists
+    const customer = await User.findById(customer_id);
+    if (!customer) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Customer not found",
+      });
+    }
+
     const newDelivery = await Delivery.create({
       customer_id,
       pickup_location,
@@ -94,14 +103,15 @@ export const createDelivery = async (req, res) => {
     // Emit the new delivery event to all connected clients
     const populatedDelivery = await newDelivery.populate("customer_id", "username email");
 
-if (req.io) {
-  req.io.emit("new_delivery_request", populatedDelivery);
-}
+    if (req.io) {
+      req.io.emit("new_delivery_request", populatedDelivery);
+    }
 
-    res.status(201).json({
-      message: "Delivery created successfully",
+    // Send success response
+    return res.status(201).json({
       status: "success",
-      data: newDelivery,
+      message: "Delivery created successfully",
+      data: populatedDelivery
     });
   } catch (err) {
     console.error("Error creating delivery:", err);

@@ -5,7 +5,7 @@ const deliverySchema = new mongoose.Schema(
   {
     customer_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Userrp",
+      ref: "User",
       required: true,
     },
     driver_id: {

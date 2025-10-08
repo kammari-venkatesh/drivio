@@ -1,5 +1,4 @@
 import UserRequest from "../Models/userrequestModel.js";
-import User from "../Models/Usersmodel.js";
 
 // Create a new user delivery request
 export const createUserRequest = async (req, res) => {

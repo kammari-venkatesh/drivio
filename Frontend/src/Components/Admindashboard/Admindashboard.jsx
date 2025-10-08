@@ -14,8 +14,8 @@ const FleetManager = () => {
   const [showCustomerRequests, setShowCustomerRequests] = useState(false);
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [requestActionLoading, setRequestActionLoading] = useState({});
-  
-
+  const [isAutoRefreshEnabled, setIsAutoRefreshEnabled] = useState(true);
+  const REFRESH_INTERVAL = 30000; // 30 seconds
 
   const navigate = useNavigate();
 
@@ -44,8 +44,18 @@ useEffect(() => {
   fetchUnverifiedDrivers();
   fetchCustomers();
   fetchCustomerRequests();
-  fetchDeliveries();   // ✅ add this
+  fetchDeliveries();
 }, []);
+
+// Auto-refresh customer requests when section is active
+useEffect(() => {
+  if (showCustomerRequests && isAutoRefreshEnabled && !requestsLoading) {
+    const intervalId = setInterval(fetchCustomerRequests, REFRESH_INTERVAL);
+    
+    // Cleanup function
+    return () => clearInterval(intervalId);
+  }
+}, [showCustomerRequests, isAutoRefreshEnabled, requestsLoading]);
 
   const fetchDrivers = async () => {
     try {
@@ -84,6 +94,11 @@ useEffect(() => {
   };
 
   const fetchCustomerRequests = async () => {
+    // Prevent multiple simultaneous fetches
+    if (requestsLoading) {
+      return;
+    }
+    
     setRequestsLoading(true);
     try {
       const res = await fetch(
@@ -149,9 +164,9 @@ useEffect(() => {
   const handleAcceptRequest = async (request) => {
     setRequestActionLoading((prev) => ({ ...prev, [request._id]: true }));
     try {
-      console.log("handleaccept working on request",request)
-      const res = await fetch(
-        "https://drivio-1uea.onrender.com/api/deliveries/setdelivery",
+      console.log("request",request)
+      const response = await fetch(
+        "http://localhost:3000/api/deliveries/setdelivery",
         {
           method: "POST",
           headers: {
@@ -162,25 +177,40 @@ useEffect(() => {
             pickup_location: request.pickup_location,
             dropoff_location: request.dropoff_location,
             customer_id: request.customer_id,
-            vehicle_id: request.vehicle_type || "",
           }),
         }
       );
+      console.log("Create Delivery Response:", response);
 
-      if (res.ok) {
+      if (response.ok) {
+        const data = await response.json();
+        setDeliveries([...deliveries, data]);
+        console.log("Delivery created:", data);
 
         // Remove request after creating delivery
-        await fetch(
+        const deleteRes = await fetch(
           `https://drivio-1uea.onrender.com/api/requests/delete/${request._id}`,
           { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}` } }
         );
 
-        setCustomerRequests((prev) =>
-          prev.filter((r) => r._id !== request._id)
-        );
+        if (deleteRes.ok) {
+          setCustomerRequests((prev) =>
+            prev.filter((r) => r._id !== request._id)
+          );
+        }
+        return true;
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create delivery:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        });
+        return false;
       }
-    } catch (err) {
-      console.error("Error accepting request:", err);
+    } catch (error) {
+      console.error("Error creating delivery:", error);
+      return false;
     } finally {
       setRequestActionLoading((prev) => ({ ...prev, [request._id]: false }));
     }

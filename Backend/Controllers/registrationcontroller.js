@@ -1,4 +1,4 @@
-import UserrpModel from "../Models/Usersmodel.js";
+import User from "../Models/Usersmodel.js";
 import { promisify } from 'util';
 import  Jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
@@ -33,7 +33,7 @@ const Validateuserdetails = (req,res,next) => {
        });
     }
 
-    const user = await UserrpModel.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials.',
         status: 'failed'
@@ -90,7 +90,7 @@ const addNewUser = async (req,res) => {
     
 
     // Create and save the new user in one step
-    const createdUser = await UserrpModel.create(userData);
+    const createdUser = await User.create(userData);
      res.status(201).json({
         message: 'User created successfully',
         user: createdUser
@@ -104,7 +104,7 @@ const addNewUser = async (req,res) => {
 
 const getallusers = async (req, res) => {
   try {
-      const users = await UserrpModel.find();
+      const users = await User.find();
       res.status(200).json({
           message: 'Users fetched successfully',
           users: users
