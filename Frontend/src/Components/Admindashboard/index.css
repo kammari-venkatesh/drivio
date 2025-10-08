@@ -16,6 +16,7 @@ body {
 .fleet-manager {
   display: flex;
   min-height: 100vh;
+  background-color: white;
     width: 100vw;
   gap: 20px;
   padding: 20px;

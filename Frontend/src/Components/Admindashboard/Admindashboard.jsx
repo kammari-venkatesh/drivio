@@ -250,7 +250,7 @@ useEffect(() => {
       {/* Sidebar */}
       <div className="sidebar">
         <div className="sidebar-header">
-          <h2 className="sidebar-title">Fleet Manager</h2>
+          <h2 className="sidebar-title">Drivio</h2>
           <p className="sidebar-subtitle">Admin Panel</p>
         </div>
         <nav className="sidebar-nav">

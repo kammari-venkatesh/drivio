@@ -37,6 +37,7 @@ input{
   display: flex;
   align-items: center;
   background-color: #ffffff;
+  justify-content: space-around;
   border-radius: 36px;
   padding: 8px;
   box-shadow: 0 8px 20px rgba(15, 22, 26, 0.06);
