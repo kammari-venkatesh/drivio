@@ -166,7 +166,7 @@ useEffect(() => {
     try {
       console.log("request",request)
       const response = await fetch(
-        "http://localhost:3000/api/deliveries/setdelivery",
+        "https://drivio-1uea.onrender.com/api/deliveries/setdelivery",
         {
           method: "POST",
           headers: {
