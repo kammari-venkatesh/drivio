@@ -159,7 +159,10 @@ body {
 /* --- STATUS & LOADING STATES --- */
 .status-page {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; min-height: 80vh; padding: 1rem;
+  text-align: center; min-height: 100vh;
+  width: 100vw;
+  padding: 1rem;
+
 }
 .status-page__icon { width: 3.5rem; height: 3.5rem; color: var(--color-warning); margin-bottom: 1rem; }
 .status-page__title { font-size: 1.5rem; font-weight: 600; margin: 0; }
