@@ -359,7 +359,7 @@ const BookingRequestsPage = () => {
             const res = await fetch(`https://drivio-1uea.onrender.com/api/deliveries/${deliveryId}/assign`, {
               method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ driver_id: Cookies.get("driverid"), vehicle_id: Cookies.get("vehicle_id"), status: "on_route" }),
+        body: JSON.stringify({ driver_id: Cookies.get("driverid"), vehicle_id: Cookies.get("vehicleid"), status: "on_route" }),
       });
       const data = await res.json();
       if (data.status === "success") {

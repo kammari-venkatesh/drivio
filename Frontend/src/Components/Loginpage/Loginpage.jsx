@@ -52,6 +52,9 @@ const LoginPanel = () => {
           navigate("/userdashboard");
         } else if (role === "driver") {
           Cookies.set("driverid", data.driverId, { expires: 50 });
+          Cookies.set("vehicleid", data.vehicle_id, { expires: 50 });
+          
+
           navigate("/driverrequest");
         }
       } else {
