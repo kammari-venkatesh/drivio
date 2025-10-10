@@ -52,30 +52,34 @@ export const updatedDeliveryStatus = async (req, res) => {
       id,
       { status: status, actual_dropoff_time: new Date() },
       { new: true }
-    );
+    ).populate("customer_id"); // ✅ CRITICAL FIX
+
     if (!updatedDelivery) {
       return res.status(404).json({
         status: "failed",
         message: "Delivery not found",
       });
-    }else{
-      if (req.io) {
-        const customerId = updatedDelivery.customer_id?._id?.toString();
-      
-        // ✅ Send ONLY to the specific customer
-        if (customerId && userSockets.has(customerId)) {
-          const socketId = userSockets.get(customerId);
-          req.io.to(socketId).emit("deliveryCompleted", {
-            message: "Your delivery is completed",
-            deliveryId: id,
-          });
-          console.log(`📦 Sent deliveryCompleted to customer ${customerId}`);
-        }}
+    }
+
+    // ✅ Emit socket event to customer
+    if (req.io) {
+      const customerId = updatedDelivery.customer_id?._id?.toString();
+    
+      if (customerId && userSockets.has(customerId)) {
+        const socketId = userSockets.get(customerId);
+        req.io.to(socketId).emit("deliveryCompleted", {
+          message: "Your delivery is completed",
+          deliveryId: id,
+        });
+        console.log(`📦 Sent deliveryCompleted to customer ${customerId}`);
+      }
+    }
+
     res.status(200).json({
       status: "success",
       message: "Delivery marked as delivered successfully",
       data: updatedDelivery,
-    });}
+    });
   } catch (err) {
     console.error("Error updating delivery status:", err);
     res.status(500).json({
