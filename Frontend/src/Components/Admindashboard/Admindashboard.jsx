@@ -15,7 +15,7 @@ const FleetManager = () => {
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [requestActionLoading, setRequestActionLoading] = useState({});
   const [isAutoRefreshEnabled, setIsAutoRefreshEnabled] = useState(true);
-  const REFRESH_INTERVAL = 30000; // 30 seconds
+  const REFRESH_INTERVAL = 10000; // 30 seconds
 
   const navigate = useNavigate();
 
